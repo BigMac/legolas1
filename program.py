@@ -1,7 +1,7 @@
 import robot
 
 def program():
-    r = Robot()
+    r = robot.Robot()
     print("Distance front: " + str(r.distance_front()))
     print("Ball captured?: " + str(r.ball_captured()))
 
