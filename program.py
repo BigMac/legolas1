@@ -1,9 +1,9 @@
 import robot
 
-def program:
+def program():
     r = Robot()
-    print("Distance front: " + r.distance_front())
-    print("Ball captured?: " + r.ball_captured())
+    print("Distance front: " + str(r.distance_front()))
+    print("Ball captured?: " + str(r.ball_captured()))
 
-if __name__ == 'main':
+if __name__ == '__main__':
     program()
