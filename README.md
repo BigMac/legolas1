@@ -8,3 +8,5 @@ hacky hack hack
 https://github.com/topikachu/python-ev3
 
 egzample: https://github.com/topikachu/python-ev3/tree/master/test
+
+prepare your anus
