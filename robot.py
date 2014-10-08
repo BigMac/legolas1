@@ -77,6 +77,41 @@ class Robot:
                 time.sleep(0.1)
         return True  # Finished as planned
 
+    def avoid_wall(self, degrees_each, threshold=50, backoff_mm=100, backoff_angle=30):
+        self.turn(-degrees_each, True)
+        self.turn(degrees_each, False)
+        if self.move_until_moving_away(threshold):
+            self.drive(-backoff_mm)
+            self.turn(backoff_angle)
+            self.drive(backoff_mm)
+            return True
+
+        self.turn(degrees_each, False)
+        if self.move_until_moving_away(threshold):
+            self.drive(-backoff_mm)
+            self.turn(-backoff_angle)
+            self.drive(backoff_mm)
+            return True
+
+        return False
+
+    def move_until_moving_away(self, threshold):
+        while self.motors_running() and self.distance_front() > threshold:
+            time.sleep(0.05)
+        if self.distance_front() <= threshold:
+            min_distance = self.distance_front()
+            while self.motors_running():
+                current_distance = self.distance_front()
+                if current_distance <= min_distance:
+                    min_distance = current_distance
+                else:
+                    self.stop()
+                    return True
+        self.move_until_finished()
+        return False
+
+
+
     def look_around(self, degrees_each, threshold=20):
         min_distance = self.distance_front()
         self.turn(-degrees_each, True)
