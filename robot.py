@@ -23,11 +23,10 @@ class Robot:
             except IOError:
                 pass # this sometimes happens, try again
 
-    def drive(self, distance_mm, block_until_done=True):
+    def drive(self, distance_mm, block_until_done=True, power=600):
         print('drive '+str(distance_mm) + 'mm')
         distance_rotations_ratio = 360/103.0
         rel_position = distance_mm * distance_rotations_ratio;
-        power = 600
         ramp = 1000
         self._rotate_track_rel(self.left_track, rel_position, power, ramp)
         self._rotate_track_rel(self.right_track, rel_position, power, ramp)
@@ -117,20 +116,22 @@ class Robot:
         found = False
         while self.motors_running() and self.distance_front() > threshold:
             max_distance = max(max_distance, self.distance_front())
-            print('find object a ' + str(self.distance_front() + " / " + str(max_distance)))
+            print('find object a ' + str(self.distance_front()) + " / " + str(max_distance))
             time.sleep(0.05)
         if self.distance_front() <= threshold:
             min_distance = current_min
             while self.motors_running():
                 current_distance = self.distance_front()
                 max_distance = max(max_distance, self.distance_front())
-                print('find object b ' + str(self.distance_front() + " / " + str(max_distance)))
+                print('find object b ' + str(self.distance_front()) + " / " + str(max_distance))
+                print('find object b ' + str(min_distance) + " / " + str(max_distance))
                 if current_distance <= min_distance:
                     min_distance = current_distance
                 else:
                     found = True
+            found = True
         while self.motors_running():
-            print('find object c ' + str(self.distance_front() + " / " + str(max_distance)))
+            print('find object c ' + str(self.distance_front()) + " / " + str(max_distance))
             max_distance = max(max_distance, self.distance_front())
             time.sleep(0.05)
         return found, max_distance
