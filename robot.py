@@ -44,7 +44,7 @@ class Robot:
 
     def turn(self, degrees, block_until_done=True):
         print('turn '+str(degrees))
-        ratio = 555 / 90.0
+        ratio = 545 / 90.0
         rel_position = ratio * degrees
         power = 400
         ramp = 400
