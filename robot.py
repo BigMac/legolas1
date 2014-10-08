@@ -83,6 +83,18 @@ class Robot:
     def close_mouth(self):
         self._move_mouth(0)
 
+    def eat_ball(self):
+        """Assumes ball is in front, close enough"""
+        self.open_mouth()
+        self.drive(300, False)
+        while (self.motors_running()):
+            if (self.ball_captured()):
+                self.close_mouth()
+                return True
+            else:
+                time.sleep(0.05)
+        return False
+
     def _rotate_track_rel(self, track, rel_position, power, ramp):
       track.position_mode=Motor.POSITION_MODE.RELATIVE
       track.run_position_limited(position_sp=rel_position,
@@ -96,3 +108,5 @@ class Robot:
         self.mouth.run_position_limited(position_sp=position,
                                         speed_sp=1000,
                                         stop_mode=Motor.STOP_MODE.BRAKE)
+        while (self.mouth.state != 'idle'):
+            time.sleep(0.1)
