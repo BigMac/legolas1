@@ -77,6 +77,27 @@ class Robot:
                 time.sleep(0.1)
         return True  # Finished as planned
 
+    def look_around(self, degrees_each, threshold=20):
+        min_distance = self.distance_front()
+        self.turn(-degrees_each, True)
+        self.turn(degrees_each * 2)
+        while self.motors_running() and self.distance_front() > threshold:
+            time.sleep(0.1)
+
+        if self.distance_front() <= threshold:
+            min_distance = self.distance_front()
+            while self.motors_running():
+                current_distance = self.distance_front()
+                if current_distance <= min_distance:
+                    min_distance = current_distance
+                else:
+                    self.stop()
+                    print('stopping at ' + str(current_distance))
+                    return # todo calculate the angle we ended up at
+
+        else:
+            self.move_until_finished()
+
     def open_mouth(self):
         self._move_mouth(-5*360)
 
