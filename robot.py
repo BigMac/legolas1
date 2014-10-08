@@ -44,7 +44,8 @@ class Robot:
     def drive(self, distance_mm, block_until_done=True, power=600):
         self.led.left.color = LED.COLOR.AMBER
         print('drive '+str(distance_mm) + 'mm')
-        distance_rotations_ratio = 360/103.0
+        #distance_rotations_ratio = 360/103.0
+        distance_rotations_ratio = 360/113.0
         rel_position = distance_mm * distance_rotations_ratio
         ramp = 1000
         self._rotate_track_rel(self.left_track, rel_position, power, ramp)
@@ -66,7 +67,8 @@ class Robot:
 
     def turn(self, degrees, block_until_done=True):
         print('turn '+str(degrees))
-        ratio = 545 / 90.0
+        #ratio = 560 / 90.0
+        ratio = 530 / 90.0
         if degrees > 0:
             led = self.led.right
         else:
@@ -204,7 +206,7 @@ class Robot:
         """Assumes ball is in front, close enough"""
         captured = False
         self.open_mouth()
-        self.drive(300, False)
+        self.drive(400, False)
         while (self.motors_running()):
             if (self.ball_captured()):
                 self.close_mouth()
@@ -212,7 +214,7 @@ class Robot:
             else:
                 time.sleep(0.05)
         self.close_mouth()
-        self.drive(-300, True)
+        self.drive(-400, True)
         return captured
 
     def get_absolute_track_positions(self):

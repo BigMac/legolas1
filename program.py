@@ -4,8 +4,8 @@ def program():
     r = robot.Robot()
     r.close_mouth()
 
-    approach_distance = 940
-    return_distance = 900
+    approach_distance = 1000
+    return_distance = 950
     distance_between_targets = 600
     right = 90
     left = -90
@@ -18,9 +18,7 @@ def program():
     # we're near pos C
     if r.look_around(30, 50):
         print("Found ball at position C")
-        if not r.eat_ball():
-            print(":(")
-            exit(1)
+        r.eat_ball()
         r.turn(left)
         r.drive(distance_between_targets)
         r.turn(left)
@@ -35,9 +33,7 @@ def program():
     # we're near pos B
     if r.look_around(30, 50):
         print("Found ball at position B")
-        if not r.eat_ball():
-            print(":(")
-            exit(1)
+        r.eat_ball()
         r.turn(around)
         r.drive(return_distance)
         r.avoid_wall(45, 50, 110, 30)
@@ -50,9 +46,7 @@ def program():
     # we're near pos A
     if r.look_around(30, 50):
         print("Found ball at position A")
-        if not r.eat_ball():
-            print(":(")
-            exit(1)
+        r.eat_ball()
         r.turn(right)
         r.drive(distance_between_targets)
         r.turn(right)
