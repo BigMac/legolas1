@@ -1,6 +1,7 @@
 from ev3.lego import InfraredSensor
 from ev3.lego import ColorSensor
 from ev3.lego import LargeMotor
+from ev3.lego import MediumMotor
 from ev3.ev3dev import Motor
 import time
 
@@ -10,6 +11,7 @@ class Robot:
         self.color = ColorSensor()
         self.left_track = LargeMotor(Motor.PORT.D)
         self.right_track = LargeMotor(Motor.PORT.A)
+        self.mouth = MediumMotor(Motor.PORT.B)
 
     def distance_front(self):
         return self.ir.prox
@@ -75,6 +77,12 @@ class Robot:
                 time.sleep(0.1)
         return True  # Finished as planned
 
+    def open_mouth(self):
+        self._move_mouth(-5*360)
+
+    def close_mouth(self):
+        self._move_mouth(0)
+
     def _rotate_track_rel(self, track, rel_position, power, ramp):
       track.position_mode=Motor.POSITION_MODE.RELATIVE
       track.run_position_limited(position_sp=rel_position,
@@ -82,3 +90,9 @@ class Robot:
                                  stop_mode=Motor.STOP_MODE.BRAKE,
                                  ramp_up_sp=ramp,
                                  ramp_down_sp=ramp)
+
+    def _move_mouth(self, position):
+        self.mouth.position_mode=Motor.POSITION_MODE.ABSOLUTE
+        self.mouth.run_position_limited(position_sp=position,
+                                        speed_sp=1000,
+                                        stop_mode=Motor.STOP_MODE.BRAKE)
