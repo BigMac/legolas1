@@ -171,23 +171,18 @@ class Robot:
 
     def eat_ball(self):
         """Assumes ball is in front, close enough"""
+        captured = False
         self.open_mouth()
-        initial_pos = self.get_absolute_track_positions()
         self.drive(300, False)
         while (self.motors_running()):
             if (self.ball_captured()):
                 self.close_mouth()
-                end_pos = self.get_absolute_track_positions()
                 captured = True
-                self.stop()
-                rel_pos = (initial_pos[0] - end_pos[0], initial_pos[1] - end_pos[1])
-                self.restore_absolute_track_positions(rel_pos, 600, 1000)
-                return True
             else:
                 time.sleep(0.05)
-        self.restore_absolute_track_positions(initial_pos, 600, 1000)
         self.close_mouth()
-        return False
+        self.drive(-300, True)
+        return captured
 
     def get_absolute_track_positions(self):
         return (self.left_track.position, self.right_track.position)
