@@ -99,7 +99,6 @@ class Robot:
                 print('action interrupted')
                 return False  # Was interrupted
             else:
-                print('distance ' + str(self.distance_front()))
                 time.sleep(0.1)
         self.reset_leds()
         return True  # Finished as planned
