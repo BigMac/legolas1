@@ -59,8 +59,8 @@ class Robot:
         return self.left_track.state != 'idle' or self.right_track.state != 'idle'
 
     def stop(self):
-        self.left_track.stop()
         self.right_track.stop()
+        self.left_track.stop()
         self.left_track.reset()
         self.right_track.reset()
 
@@ -168,23 +168,49 @@ class Robot:
 
     def eat_ball(self):
         """Assumes ball is in front, close enough"""
+        captured = False;
         self.open_mouth()
+        initial_pos = self.get_absolute_track_positions()
         self.drive(300, False)
         while (self.motors_running()):
             if (self.ball_captured()):
                 self.close_mouth()
+                end_pos = self.get_absolute_track_positions()
+                captured = True
+                self.stop()
+                rel_pos = (initial_pos[0] - end_pos[0], initial_pos[1] - end_pos[1])
+                self.restore_absolute_track_positions(rel_pos, 600, 1000)
                 return True
             else:
                 time.sleep(0.05)
+        self.restore_absolute_track_positions(initial_pos, 600, 1000)
+        self.close_mouth()
         return False
 
+    def get_absolute_track_positions(self):
+        return (self.left_track.position, self.right_track.position)
+
+    def restore_absolute_track_positions(self, positions, power, ramp):
+        print('Current track positions: ' + str(self.get_absolute_track_positions()))
+        print('Want to restore: ' + str(positions))
+        self._rotate_track_abs(self.left_track, positions[0], power, ramp)
+        self._rotate_track_abs(self.right_track, positions[1], power, ramp)
+
     def _rotate_track_rel(self, track, rel_position, power, ramp):
-      track.position_mode=Motor.POSITION_MODE.RELATIVE
-      track.run_position_limited(position_sp=rel_position,
-                                 speed_sp=power,
-                                 stop_mode=Motor.STOP_MODE.BRAKE,
-                                 ramp_up_sp=ramp,
-                                 ramp_down_sp=ramp)
+        track.position_mode=Motor.POSITION_MODE.RELATIVE
+        track.run_position_limited(position_sp=rel_position,
+                                   speed_sp=power,
+                                   stop_mode=Motor.STOP_MODE.BRAKE,
+                                   ramp_up_sp=ramp,
+                                   ramp_down_sp=ramp)
+
+    def _rotate_track_abs(self, track, abs_position, power, ramp):
+        track.position_mode=Motor.POSITION_MODE.ABSOLUTE
+        track.run_position_limited(position_sp=abs_position,
+                                   speed_sp=power,
+                                   stop_mode=Motor.STOP_MODE.BRAKE,
+                                   ramp_up_sp=ramp,
+                                   ramp_down_sp=ramp)
 
     def _move_mouth(self, position):
         self.mouth.position_mode=Motor.POSITION_MODE.ABSOLUTE
