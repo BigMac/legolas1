@@ -95,17 +95,16 @@ class Robot:
         print("negative degrees: " + str(found_neg) + ", " + str(max_neg))
         if found_pos and not found_neg:
             correction = -1
-            scale = 1.5
         elif found_neg and not found_pos:
             correction = 1
-            scale = 1.5
         elif found_pos and found_neg:
+            scale = 2
             if max_pos > max_neg:
                 correction = 1
             elif max_neg > max_pos:
                 correction = -1
 
-        print("correction: " + str(correction))
+        print("correction: " + str(correction) + ", scale: " + str(scale))
         if correction != 0:
             self.drive(-backoff_mm * scale)
             self.turn(backoff_angle * correction)
