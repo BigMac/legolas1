@@ -6,6 +6,7 @@ def program():
     print("Ball captured?: " + str(r.ball_captured()))
 
     r.avoid_wall(30, 50, 100, 30)
+    r.drive_until_distance(10)
 #    r.turn(90)
 #    r.drive_until_distance(16)
 #    r.turn(-90)
