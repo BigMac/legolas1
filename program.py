@@ -5,8 +5,9 @@ def program():
     print("Distance front: " + str(r.distance_front()))
     print("Ball captured?: " + str(r.ball_captured()))
 
-    r.avoid_wall(30, 50, 100, 30)
-    r.drive_until_distance(10)
+    r.avoid_wall(45, 50, 100, 30)
+    r.drive(200)
+    return
 #    r.turn(90)
 #    r.drive_until_distance(16)
 #    r.turn(-90)

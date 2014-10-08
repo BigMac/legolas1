@@ -78,37 +78,55 @@ class Robot:
         return True  # Finished as planned
 
     def avoid_wall(self, degrees_each, threshold=50, backoff_mm=100, backoff_angle=30):
+        if self.distance_front() < 50:
+            self.drive(-backoff_mm)
         self.turn(-degrees_each, True)
         self.turn(degrees_each, False)
-        if self.move_until_moving_away(threshold):
-            self.drive(-backoff_mm)
-            self.turn(backoff_angle)
-            self.drive(backoff_mm)
-            return True
+        found_neg, max_neg = self.move_until_moving_away(threshold)
+        self.turn(degrees_each, True)
+        self.turn(-degrees_each, False)
+        found_pos, max_pos = self.move_until_moving_away(threshold)
 
-        self.turn(degrees_each, False)
-        if self.move_until_moving_away(threshold):
+        max_pos = max(80, max_pos)
+        max_neg = max(80, max_pos)
+
+        correction = 0
+        if found_pos and not found_neg:
+            correction = -1
+        elif found_neg and not found_pos:
+            correction = 1
+        elif found_pos and found_neg:
+            if max_pos > max_neg:
+                correction = 1
+            elif max_neg > max_pos:
+                correction = -1
+
+        if correction != 0:
             self.drive(-backoff_mm)
-            self.turn(-backoff_angle)
+            self.turn(backoff_angle * correction)
             self.drive(backoff_mm)
             return True
 
         return False
 
-    def move_until_moving_away(self, threshold):
+    def move_until_moving_away(self, threshold, current_min=99):
+        max_distance = 0
+        found = False
         while self.motors_running() and self.distance_front() > threshold:
+            max_distance = max(max_distance, self.distance_front())
             time.sleep(0.05)
         if self.distance_front() <= threshold:
-            min_distance = self.distance_front()
+            min_distance = current_min
             while self.motors_running():
                 current_distance = self.distance_front()
                 if current_distance <= min_distance:
                     min_distance = current_distance
                 else:
-                    self.stop()
-                    return True
-        self.move_until_finished()
-        return False
+                    found = True
+        while self.motors_running():
+            max_distance = max(max_distance, self.distance_front())
+            time.sleep(0.05)
+        return found, max_distance
 
 
 
