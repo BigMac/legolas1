@@ -189,9 +189,15 @@ class Robot:
         self.turn(-degrees_each, True)
 
     def open_mouth(self):
+        self.led.left.blink(color=LED.COLOR.RED, delay_on=100, delay_off=200)
+        self.led.right.blink(color=LED.COLOR.RED, delay_on=100, delay_off=200)
         self._move_mouth(-5*360)
+        self.led.left.color = LED.COLOR.RED
+        self.led.right.color = LED.COLOR.RED
 
     def close_mouth(self):
+        self.led.left.blink(color=LED.COLOR.RED, delay_on=100, delay_off=200)
+        self.led.right.blink(color=LED.COLOR.RED, delay_on=100, delay_off=200)
         self._move_mouth(0)
 
     def eat_ball(self):
