@@ -2,6 +2,7 @@ from ev3.lego import InfraredSensor
 from ev3.lego import ColorSensor
 from ev3.lego import LargeMotor
 from ev3.ev3dev import Motor
+import time
 
 class Robot:
     def __init__(self):
@@ -23,21 +24,45 @@ class Robot:
     def turn(self, degrees):
         pass
 
-    def drive(self, distance_mm):
+    def drive(self, distance_mm, block_until_done=True):
         distance_rotations_ratio = 360/103.0
         rel_position = distance_mm * distance_rotations_ratio;
         power = 600
         ramp = 1000
         _rotate_track_rel(self.left_track, rel_position, power, ramp)
         _rotate_track_rel(self.right_track, rel_position, power, ramp)
+        if (block_until_done):
+          return self.move_until_finished()
+        else:
+          return True
 
-    def turn(self, degrees):
+    def turn(self, degrees, block_until_done=True):
         ratio = 555/90.0
         rel_position = ratio * degrees;
         power = 400
         ramp = 400
         _rotate_track_rel(self.left_track, rel_position, power, ramp)
         _rotate_track_rel(self.right_track, -rel_position, power, ramp)
+        if (block_until_done):
+          return self.move_until_finished()
+        else:
+          return True
+
+    def motors_running(self):
+      return self.left_track.run || self.right_track.run
+
+    def stop(self):
+      self.left_track.stop()
+      self.right_track.stop()
+
+    def move_until_finished(self):
+      while (self.motors_running()):
+        if (self.distance_front() < 10):
+          self.stop()
+          return False  # Was interrupted
+        else:
+          time.sleep(0.1)
+      return True  # Finished as planned
 
     def _rotate_track_rel(self, track, rel_position, power, ramp):
       track.position_mode=Motor.POSITION_MODE.RELATIVE)
