@@ -27,7 +27,7 @@ class Robot:
 
     def keys(self):
         keys = ('up', 'down', 'left', 'right', 'backspace', 'enter')
-        dump = [x + ":" + str(self.key.__dict__[x]) for x in keys]
+        dump = [x + ":" + str(gettatr(self.key, x)) for x in keys]
         print " ".join(dump)
         return self.key
 
