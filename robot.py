@@ -31,3 +31,12 @@ class Robot:
             stop_mode=Motor.STOP_MODE.BRAKE , ramp_up_sp=1000, ramp_down_sp=1000)
         self.right_track.run_position_limited(position_sp=distance_mm * distance_rotations_ratio, speed_sp=600,
             stop_mode=Motor.STOP_MODE.BRAKE , ramp_up_sp=1000, ramp_down_sp=1000)
+
+    def turn(self, degrees, power):
+        atio = 360/103.0
+        self.left_track.position_mode=Motor.POSITION_MODE.RELATIVE
+        self.right_track.position_mode=Motor.POSITION_MODE.RELATIVE
+        self.left_track.run_position_limited(position_sp=555, speed_sp=400,
+            stop_mode=Motor.STOP_MODE.BRAKE , ramp_up_sp=400, ramp_down_sp=400)
+        self.right_track.run_position_limited(position_sp=-555, speed_sp=400,
+            stop_mode=Motor.STOP_MODE.BRAKE , ramp_up_sp=400, ramp_down_sp=400)
