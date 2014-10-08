@@ -21,9 +21,6 @@ class Robot:
             except IOError:
                 pass # this sometimes happens, try again
 
-    def turn(self, degrees):
-        pass
-
     def drive(self, distance_mm, block_until_done=True):
         print('drive '+str(distance_mm) + 'mm')
         distance_rotations_ratio = 360/103.0
@@ -43,15 +40,15 @@ class Robot:
         rel_position = ratio * degrees;
         power = 400
         ramp = 400
-        self._rotate_track_rel(self.left_track, rel_position, power, ramp)
-        self._rotate_track_rel(self.right_track, -rel_position, power, ramp)
+        self._rotate_track_rel(self.left_track, -rel_position, power, ramp)
+        self._rotate_track_rel(self.right_track, rel_position, power, ramp)
         if (block_until_done):
             return self.move_until_finished()
         else:
             return True
 
     def motors_running(self):
-        return self.left_track.run or self.right_track.run
+        return self.left_track.state != 'idle' or self.right_track.state != 'idle'
 
     def stop(self):
         self.left_track.stop()
@@ -67,7 +64,6 @@ class Robot:
                 print('action interrupted')
                 return False  # Was interrupted
             else:
-                print('motors still running ' + str(self.motors_running()))
                 time.sleep(0.1)
         return True  # Finished as planned
 
