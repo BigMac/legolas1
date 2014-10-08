@@ -23,20 +23,26 @@ class Robot:
     def turn(self, degrees):
         pass
 
-    def drive(self, distance_mm, power):
+    def drive(self, distance_mm):
         distance_rotations_ratio = 360/103.0
-        self.left_track.position_mode=Motor.POSITION_MODE.RELATIVE
-        self.right_track.position_mode=Motor.POSITION_MODE.RELATIVE
-        self.left_track.run_position_limited(position_sp=distance_mm * distance_rotations_ratio, speed_sp=600,
-            stop_mode=Motor.STOP_MODE.BRAKE , ramp_up_sp=1000, ramp_down_sp=1000)
-        self.right_track.run_position_limited(position_sp=distance_mm * distance_rotations_ratio, speed_sp=600,
-            stop_mode=Motor.STOP_MODE.BRAKE , ramp_up_sp=1000, ramp_down_sp=1000)
+        rel_position = distance_mm * distance_rotations_ratio;
+        power = 600
+        ramp = 1000
+        _rotate_track_rel(self.left_track, rel_position, power, ramp)
+        _rotate_track_rel(self.right_track, rel_position, power, ramp)
 
-    def turn(self, degrees, power):
+    def turn(self, degrees):
         ratio = 555/90.0
-        self.left_track.position_mode=Motor.POSITION_MODE.RELATIVE
-        self.right_track.position_mode=Motor.POSITION_MODE.RELATIVE
-        self.left_track.run_position_limited(position_sp=ratio * degrees, speed_sp=400,
-            stop_mode=Motor.STOP_MODE.BRAKE , ramp_up_sp=400, ramp_down_sp=400)
-        self.right_track.run_position_limited(position_sp=-ratio * degrees, speed_sp=400,
-            stop_mode=Motor.STOP_MODE.BRAKE , ramp_up_sp=400, ramp_down_sp=400)
+        rel_position = ratio * degrees;
+        power = 400
+        ramp = 400
+        _rotate_track_rel(self.left_track, rel_position, power, ramp)
+        _rotate_track_rel(self.right_track, -rel_position, power, ramp)
+
+    def _rotate_track_rel(self, track, rel_position, power, ramp):
+      track.position_mode=Motor.POSITION_MODE.RELATIVE)
+      track.run_position_limited(position_sp=rel_position,
+                                 speed_sp=power,
+                                 stop_mode=Motor.STOP_MODE.BRAKE,
+                                 ramp_up_sp=ramp,
+                                 ramp_down_sp=ramp)
