@@ -26,7 +26,7 @@ class Robot:
     def drive(self, distance_mm, block_until_done=True, power=600):
         print('drive '+str(distance_mm) + 'mm')
         distance_rotations_ratio = 360/103.0
-        rel_position = distance_mm * distance_rotations_ratio;
+        rel_position = distance_mm * distance_rotations_ratio
         ramp = 1000
         self._rotate_track_rel(self.left_track, rel_position, power, ramp)
         self._rotate_track_rel(self.right_track, rel_position, power, ramp)
@@ -44,8 +44,8 @@ class Robot:
 
     def turn(self, degrees, block_until_done=True):
         print('turn '+str(degrees))
-        ratio = 555/90.0
-        rel_position = ratio * degrees;
+        ratio = 555 / 90.0
+        rel_position = ratio * degrees
         power = 400
         ramp = 400
         self._rotate_track_rel(self.left_track, -rel_position, power, ramp)
@@ -171,7 +171,6 @@ class Robot:
 
     def eat_ball(self):
         """Assumes ball is in front, close enough"""
-        captured = False;
         self.open_mouth()
         initial_pos = self.get_absolute_track_positions()
         self.drive(300, False)
@@ -200,7 +199,7 @@ class Robot:
         self._rotate_track_abs(self.right_track, positions[1], power, ramp)
 
     def _rotate_track_rel(self, track, rel_position, power, ramp):
-        track.position_mode=Motor.POSITION_MODE.RELATIVE
+        track.position_mode = Motor.POSITION_MODE.RELATIVE
         track.run_position_limited(position_sp=rel_position,
                                    speed_sp=power,
                                    stop_mode=Motor.STOP_MODE.BRAKE,
@@ -208,7 +207,7 @@ class Robot:
                                    ramp_down_sp=ramp)
 
     def _rotate_track_abs(self, track, abs_position, power, ramp):
-        track.position_mode=Motor.POSITION_MODE.ABSOLUTE
+        track.position_mode = Motor.POSITION_MODE.ABSOLUTE
         track.run_position_limited(position_sp=abs_position,
                                    speed_sp=power,
                                    stop_mode=Motor.STOP_MODE.BRAKE,
@@ -216,7 +215,7 @@ class Robot:
                                    ramp_down_sp=ramp)
 
     def _move_mouth(self, position):
-        self.mouth.position_mode=Motor.POSITION_MODE.ABSOLUTE
+        self.mouth.position_mode = Motor.POSITION_MODE.ABSOLUTE
         self.mouth.run_position_limited(position_sp=position,
                                         speed_sp=1000,
                                         stop_mode=Motor.STOP_MODE.BRAKE)
