@@ -2,6 +2,8 @@ from ev3.lego import InfraredSensor
 from ev3.lego import ColorSensor
 from ev3.lego import LargeMotor
 from ev3.lego import MediumMotor
+from ev3.ev3dev import Key
+from ev3.ev3dev import LED
 from ev3.ev3dev import Motor
 import time
 
@@ -12,6 +14,22 @@ class Robot:
         self.left_track = LargeMotor(Motor.PORT.D)
         self.right_track = LargeMotor(Motor.PORT.A)
         self.mouth = MediumMotor(Motor.PORT.B)
+        self.key = Key()
+        self.led = LED()
+        self.reset_leds()
+
+    def reset_leds(self):
+        self.led.left.on()
+        self.led.right.on()
+        self.led.left.color = LED.COLOR.GREEN
+        self.led.right.color = LED.COLOR.GREEN
+
+
+    def keys(self):
+        keys = ('up', 'down', 'left', 'right', 'backspace', 'enter')
+        dump = [x + ":" + str(self.key.__dict__[x]) for x in keys]
+        print " ".join(dump)
+        return self.key
 
     def distance_front(self):
         return self.ir.prox
@@ -24,6 +42,7 @@ class Robot:
                 pass # this sometimes happens, try again
 
     def drive(self, distance_mm, block_until_done=True, power=600):
+        self.led.left.color = LED.COLOR.AMBER
         print('drive '+str(distance_mm) + 'mm')
         distance_rotations_ratio = 360/103.0
         rel_position = distance_mm * distance_rotations_ratio
@@ -33,17 +52,25 @@ class Robot:
         if (block_until_done):
             return self.move_until_finished()
         else:
+            self.reset_leds()
             return True
 
     def drive_until_distance(self, ir_distance):
+        self.led.right.color = LED.COLOR.AMBER
         print('driving until ir shows ' + str(ir_distance))
         self.drive(20000, False)
         while (self.distance_front() > ir_distance):
             time.sleep(0.1)
         self.stop()
+        self.reset_leds()
 
     def turn(self, degrees, block_until_done=True):
         print('turn '+str(degrees))
+        if degrees > 0:
+            led = self.led.right
+        else:
+            led = self.led.left
+        led.blink(color=LED.COLOR.AMBER, delay_on=100, delay_off=200)
         ratio = 555 / 90.0
         rel_position = ratio * degrees
         power = 400
@@ -74,6 +101,7 @@ class Robot:
             else:
                 print('distance ' + str(self.distance_front()))
                 time.sleep(0.1)
+        self.reset_leds()
         return True  # Finished as planned
 
     def avoid_wall(self, degrees_each, threshold=50, backoff_mm=100, backoff_angle=30):
