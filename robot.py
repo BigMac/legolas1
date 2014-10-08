@@ -80,9 +80,9 @@ class Robot:
     def look_around(self, degrees_each, threshold=20):
         min_distance = self.distance_front()
         self.turn(-degrees_each, True)
-        self.turn(degrees_each * 2)
+        self.turn(degrees_each * 2, False)
         while self.motors_running() and self.distance_front() > threshold:
-            time.sleep(0.1)
+            time.sleep(0.05)
 
         if self.distance_front() <= threshold:
             min_distance = self.distance_front()
