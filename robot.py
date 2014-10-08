@@ -78,7 +78,7 @@ class Robot:
         return True  # Finished as planned
 
     def avoid_wall(self, degrees_each, threshold=50, backoff_mm=100, backoff_angle=30):
-        if self.distance_front() < 50:
+        if self.distance_front() < 30:
             self.drive(-backoff_mm)
         self.turn(-degrees_each, True)
         self.turn(degrees_each, False)
@@ -87,10 +87,12 @@ class Robot:
         self.turn(-degrees_each, False)
         found_pos, max_pos = self.move_until_moving_away(threshold)
 
-        max_pos = max(80, max_pos)
-        max_neg = max(80, max_pos)
+        #max_pos = max(80, max_pos)
+        #max_neg = max(80, max_pos)
 
         correction = 0
+        print("positive degrees: " + str(found_pos) + ", " + str(max_pos))
+        print("negative degrees: " + str(found_neg) + ", " + str(max_neg))
         if found_pos and not found_neg:
             correction = -1
         elif found_neg and not found_pos:
@@ -101,6 +103,7 @@ class Robot:
             elif max_neg > max_pos:
                 correction = -1
 
+        print("correction: " + str(correction))
         if correction != 0:
             self.drive(-backoff_mm)
             self.turn(backoff_angle * correction)
@@ -114,16 +117,20 @@ class Robot:
         found = False
         while self.motors_running() and self.distance_front() > threshold:
             max_distance = max(max_distance, self.distance_front())
+            print('find object a ' + str(self.distance_front() + " / " + str(max_distance)))
             time.sleep(0.05)
         if self.distance_front() <= threshold:
             min_distance = current_min
             while self.motors_running():
                 current_distance = self.distance_front()
+                max_distance = max(max_distance, self.distance_front())
+                print('find object b ' + str(self.distance_front() + " / " + str(max_distance)))
                 if current_distance <= min_distance:
                     min_distance = current_distance
                 else:
                     found = True
         while self.motors_running():
+            print('find object c ' + str(self.distance_front() + " / " + str(max_distance)))
             max_distance = max(max_distance, self.distance_front())
             time.sleep(0.05)
         return found, max_distance
