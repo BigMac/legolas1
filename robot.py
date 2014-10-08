@@ -34,6 +34,13 @@ class Robot:
         else:
             return True
 
+    def drive_until_distance(self, ir_distance):
+        print('driving until ir shows ' + str(ir_distance))
+        self.drive(20000, False)
+        while (self.distance_front() > ir_distance):
+            time.sleep(0.1)
+        self.stop()
+
     def turn(self, degrees, block_until_done=True):
         print('turn '+str(degrees))
         ratio = 555/90.0
@@ -64,6 +71,7 @@ class Robot:
                 print('action interrupted')
                 return False  # Was interrupted
             else:
+                print('distance ' + str(self.distance_front()))
                 time.sleep(0.1)
         return True  # Finished as planned
 
