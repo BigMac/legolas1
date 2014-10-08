@@ -158,9 +158,8 @@ class Robot:
                     print('stopping at ' + str(current_distance))
                     return True # todo calculate the angle we ended up at
 
-        else:
-            self.move_until_finished()
-            self.turn(-degrees_each, True)
+        self.move_until_finished()
+        self.turn(-degrees_each, True)
 
     def open_mouth(self):
         self._move_mouth(-5*360)
