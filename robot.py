@@ -50,7 +50,7 @@ class Robot:
         self._rotate_track_rel(self.left_track, rel_position, power, ramp)
         self._rotate_track_rel(self.right_track, rel_position, power, ramp)
         if (block_until_done):
-            return self.move_until_finished()
+            return self.move_until_finished(distance_mm < 0)
         else:
             self.reset_leds()
             return True
@@ -91,10 +91,10 @@ class Robot:
         self.left_track.reset()
         self.right_track.reset()
 
-    def move_until_finished(self):
+    def move_until_finished(self, reverse=False):
         print('move until finished')
         while (self.motors_running()):
-            if (self.distance_front() < 10):
+            if not reverse and self.distance_front() < 10:
                 self.stop()
                 print('action interrupted')
                 return False  # Was interrupted
