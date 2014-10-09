@@ -6,6 +6,7 @@ from ev3.ev3dev import Key
 from ev3.ev3dev import LED
 from ev3.ev3dev import Motor
 import time
+import subprocess
 
 class Robot:
     def __init__(self):
@@ -70,8 +71,8 @@ class Robot:
 
     def turn(self, degrees, block_until_done=True):
         print('turn '+str(degrees))
-        ratio = 560 / 90.0
-        #ratio = 530 / 90.0
+        #ratio = 560 / 90.0
+        ratio = 530 / 90.0
         if degrees > 0:
             led = self.led.right
         else:
@@ -172,10 +173,11 @@ class Robot:
 
 
 
-    def look_around(self, degrees_each, threshold=20):
+    def look_around(self, degrees_each, threshold=20, reverse=False):
         min_distance = self.distance_front()
-        self.turn(-degrees_each-5, True)
-        self.turn(degrees_each * 2, False)
+        mult = 1 if not reverse else -1
+        self.turn(-mult * degrees_each, True)
+        self.turn(mult * degrees_each * 2, False)
         while self.motors_running() and self.distance_front() > threshold:
             time.sleep(0.05)
 
@@ -191,7 +193,7 @@ class Robot:
                     return True # todo calculate the angle we ended up at
 
         self.move_until_finished()
-        self.turn(-degrees_each, True)
+        self.turn(-mult * degrees_each, True)
 
     def open_mouth(self):
         self.led.left.blink(color=LED.COLOR.RED, delay_on=100, delay_off=200)
