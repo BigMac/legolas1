@@ -53,8 +53,10 @@ def program():
         r.drive(return_distance)
         r.avoid_wall(45, 50, 110, 30)
         r.drive(800)
+        r.music("badumtss")
         return
     print("no ball!")
+    r.music("drama")
 
 if __name__ == '__main__':
     program()

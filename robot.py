@@ -31,6 +31,9 @@ class Robot:
         print " ".join(dump)
         return self.key
 
+    def music(self, tune):
+        subprocess.call(["aplay", "%s.wav" % tune])
+
     def distance_front(self):
         return self.ir.prox
 
