@@ -4,8 +4,8 @@ def program():
     r = robot.Robot()
     r.close_mouth()
 
-    approach_distance = 1000
-    return_distance = 950
+    approach_distance = 900
+    return_distance = 800
     distance_between_targets = 600
     right = 90
     left = -90
@@ -24,10 +24,10 @@ def program():
         r.turn(left)
         r.drive(return_distance)
         r.avoid_wall(45, 50, 110, 30)
-        r.drive(500)
+        r.drive(800)
         return
     # Not found in position C
-    r.turn(left)
+    r.turn(left-5)
     r.drive(distance_between_targets)
     r.turn(right)
     # we're near pos B
@@ -37,10 +37,10 @@ def program():
         r.turn(around)
         r.drive(return_distance)
         r.avoid_wall(45, 50, 110, 30)
-        r.drive(500)
+        r.drive(800)
         return
     # Not found in position B
-    r.turn(left)
+    r.turn(left-5)
     r.drive(distance_between_targets)
     r.turn(right)
     # we're near pos A
@@ -52,7 +52,7 @@ def program():
         r.turn(right)
         r.drive(return_distance)
         r.avoid_wall(45, 50, 110, 30)
-        r.drive(500)
+        r.drive(800)
         return
     print("no ball!")
 

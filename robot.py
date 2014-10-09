@@ -44,8 +44,8 @@ class Robot:
     def drive(self, distance_mm, block_until_done=True, power=600):
         self.led.left.color = LED.COLOR.AMBER
         print('drive '+str(distance_mm) + 'mm')
-        #distance_rotations_ratio = 360/103.0
-        distance_rotations_ratio = 360/113.0
+        distance_rotations_ratio = 360/109.0
+        #distance_rotations_ratio = 360/113.0
         rel_position = distance_mm * distance_rotations_ratio
         ramp = 1000
         self._rotate_track_rel(self.left_track, rel_position, power, ramp)
@@ -67,8 +67,8 @@ class Robot:
 
     def turn(self, degrees, block_until_done=True):
         print('turn '+str(degrees))
-        #ratio = 560 / 90.0
-        ratio = 530 / 90.0
+        ratio = 560 / 90.0
+        #ratio = 530 / 90.0
         if degrees > 0:
             led = self.led.right
         else:
@@ -76,7 +76,7 @@ class Robot:
         led.blink(color=LED.COLOR.AMBER, delay_on=100, delay_off=200)
         rel_position = ratio * degrees
         power = 400
-        ramp = 400
+        ramp = 50
         self._rotate_track_rel(self.left_track, -rel_position, power, ramp)
         self._rotate_track_rel(self.right_track, rel_position, power, ramp)
         if (block_until_done):
@@ -88,8 +88,8 @@ class Robot:
         return self.left_track.state != 'idle' or self.right_track.state != 'idle'
 
     def stop(self):
-        self.right_track.stop()
         self.left_track.stop()
+        self.right_track.stop()
         self.left_track.reset()
         self.right_track.reset()
 
@@ -171,7 +171,7 @@ class Robot:
 
     def look_around(self, degrees_each, threshold=20):
         min_distance = self.distance_front()
-        self.turn(-degrees_each, True)
+        self.turn(-degrees_each-5, True)
         self.turn(degrees_each * 2, False)
         while self.motors_running() and self.distance_front() > threshold:
             time.sleep(0.05)
